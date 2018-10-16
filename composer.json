@@ -1,0 +1,33 @@
+{
+    "name": "maer/mongo-query",
+    "description": "A basic query builder in PHP for mongo",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Magnus Eriksson",
+            "email": "mange@reloop.se"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Maer\\MongoQuery\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.0",
+        "mongodb/mongodb": "^1.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "squizlabs/php_codesniffer": "^2.8"
+    },
+    "scripts": {
+        "cs": "./vendor/bin/phpcs --standard=PSR2 --extensions=php --ignore=vendor/,tests/ -n -s ./",
+        "phpunit": "./vendor/bin/phpunit --strict-coverage --colors=always",
+        "test": [
+            "@cs"
+        ]
+    }
+}
