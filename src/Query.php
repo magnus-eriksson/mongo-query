@@ -180,7 +180,7 @@ class Query
             ? $this->parseWhere($col, $type)
             : $this->parseWhere($col, $type, $val);
 
-        $this->or[$col] = $val;
+        $this->or[] = [$col => $val];
 
         return $this;
     }
@@ -231,7 +231,7 @@ class Query
      * @param string $value
      * @param string &$arr
      */
-    public function setArray($key, $value, &$arr)
+    protected function setArray($key, $value, &$arr)
     {
         $arr = [];
         $keys = explode('.', $key);
@@ -322,7 +322,6 @@ class Query
         list($query, $options) = $this->buildQuery();
 
         $isSingle = $this->isSingle($data);
-        $data     = ['$set' => $data];
 
         if ($isSingle) {
             $updated = $this->collection->replaceOne($query, $data);
@@ -590,6 +589,7 @@ class Query
 
         return array_values($query);
     }
+
 
     /**
      * Check if the data contains a single document or many
