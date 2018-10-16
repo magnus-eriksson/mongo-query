@@ -8,9 +8,9 @@ php:
 services: mongodb
 
 before_script:
-  - wget http://pecl.php.net/get/mongo-1.4.2.tgz
-  - tar -xzf mongo-1.4.2.tgz
-  - sh -c "cd mongo-1.4.2 && phpize && ./configure && sudo make install"
+  - wget http://pecl.php.net/get/mongo-1.4.0.tgz
+  - tar -xzf mongo-1.4.0.tgz
+  - sh -c "cd mongo-1.4.0 && phpize && ./configure && sudo make install"
   - echo "extension=mongo.so" >> `php --ini | grep "Loaded Configuration" | sed -e "s|.*:\s*||"`
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source --dev
