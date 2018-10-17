@@ -71,8 +71,8 @@ class MongoQuery
 
         return $this->databases[$dbName] = new Database(
             $this->client->{$dbName},
-            $this->options,
-            $dbName
+            $dbName,
+            $this->options
         );
     }
 

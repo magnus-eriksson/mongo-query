@@ -13,13 +13,7 @@ class Mongo
     public static function client()
     {
         if (is_null(self::$client)) {
-            self::$client = new \MongoDB\Client('mongodb://localhost:27017', [], [
-                'typeMap' => [
-                    'root'     => 'array',
-                    'document' => 'array',
-                    'array'    => 'array',
-                ]
-            ]);
+            self::$client = new \MongoDB\Client('mongodb://localhost:27017');
         }
 
         return self::$client;

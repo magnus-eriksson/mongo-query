@@ -23,9 +23,16 @@ class Database
     /**
      * @param Client $db
      */
-    public function __construct(MongoDatabase $db, array $options, $dbName)
+    public function __construct(MongoDatabase $db, $dbName, array $options)
     {
-        $this->db      = $db;
+        $this->db      = $db->withOptions([
+            'typeMap' => [
+                'root'     => 'array',
+                'document' => 'array',
+                'array'    => 'array',
+            ]
+        ]);
+
         $this->options = $options;
         $this->dbName  = $dbName;
 
@@ -52,7 +59,7 @@ class Database
      */
     public function collection($collectionName)
     {
-        return new Query(
+        return new Collection(
             $this->db->{$collectionName},
             $this->options
         );
