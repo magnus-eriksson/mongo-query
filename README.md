@@ -43,8 +43,13 @@ composer require maer/mongo-query
 // Load composers autoloader
 include '/path/to/vendor/autoload.php';
 
-// Instantiate the library
+// If you instantiate the library without any arguments, the library
+// will create a MongoDB\Client instance with 'mongodb://localhost:27071'.
 $client = new Maer\MongoQuery\MongoQuery();
+
+// If you want to use a previously instantiated MongoDB\Client, pass it as the first argument
+$myMongo = new MongoDB\Client('mongodb://example.com:1234', ], ['some settings']);
+$client  = $client = new Maer\MongoQuery\MongoQuery($myMongo);
 
 
 // Get a database
