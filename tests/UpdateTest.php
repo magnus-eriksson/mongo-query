@@ -15,7 +15,7 @@ class UpdateTest extends Base
             'test' => 'not-modified',
         ]);
 
-        $query->where('id', $id)->update([
+        $query->where('id', $id)->updateOne([
             'name' => 'bar',
         ]);
 
@@ -35,7 +35,7 @@ class UpdateTest extends Base
             'test' => 'not-modified',
         ]);
 
-        $query->where('id', $id)->replace([
+        $query->where('id', $id)->replaceOne([
             'name' => 'bar',
         ]);
 

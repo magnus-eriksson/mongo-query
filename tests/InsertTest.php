@@ -17,12 +17,12 @@ class InsertTest extends Base
         $this->assertEquals(1, $query->count());
     }
 
-    public function testInsertBatch()
+    public function testInsertMany()
     {
         $this->db->test->getInstance()->drop();
         $query = $this->db->test;
 
-        $inserted = $query->insert([
+        $ids = $query->insert([
             [
                 'name' => 'foo'
             ],
@@ -31,7 +31,6 @@ class InsertTest extends Base
             ]
         ]);
 
-        $this->assertEquals(true, $inserted);
-        $this->assertEquals(2, $query->count());
+        $this->assertEquals(2, count($ids));
     }
 }

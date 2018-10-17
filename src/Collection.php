@@ -158,6 +158,20 @@ class Collection
 
 
     /**
+     * Set order by
+     *
+     * @param  array  $order
+     * @return $this
+     */
+    public function orderBy($order)
+    {
+        $this->query['options']->orderBy($order);
+
+        return $this;
+    }
+
+
+    /**
      * Get results
      *
      * @return array
@@ -165,8 +179,6 @@ class Collection
     public function get()
     {
         list($filters, $options) = $this->getFiltersAndOptions();
-
-        dd($filters);
 
         $result = $this->collection->find($filters, $options);
 

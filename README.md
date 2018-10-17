@@ -23,6 +23,7 @@ _**Note:**_ This is just a wrapper for the `mongodb/mongodb`-library and you alw
         * [Order by](#order-by)
         * [Limit](#limit)
         * [Skip](#skip)
+        * [Select](#skip)
         * [Update](#update)
         * [Replace](#replace)
         * [Delete](#delete)
@@ -256,6 +257,18 @@ If you need to add an offset (for using with pagination, for example), you can d
 // Get all results from the second match and forward.
 $result = $collection->offset(2)->get();
 ```
+
+#### Select
+
+You might only want to fetch some specific fields from the documents. You can define what fields to get using `select()`
+
+```php
+// Define what fields you want to get
+$result = $collection->select(['some-key', 'some-other-key'])->get();
+```
+
+**Note:** This method will always return the `_id`-field as well
+
 
 ### Update
 
