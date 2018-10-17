@@ -47,7 +47,7 @@ include '/path/to/vendor/autoload.php';
 // (using localhost and default port)
 $client = new Maer\MongoQuery\MongoQuery();
 
-// To use a custom client intsance, pass it as the first argument
+// To use a custom client instance, pass it as the first argument
 $client = $client = new Maer\MongoQuery\MongoQuery(
     new MongoDB\Client('mongodb://example.com:1234')
 );
