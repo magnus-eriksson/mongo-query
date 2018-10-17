@@ -166,6 +166,8 @@ class Collection
     {
         list($filters, $options) = $this->getFiltersAndOptions();
 
+        dd($filters);
+
         $result = $this->collection->find($filters, $options);
 
         return $this->processResult($result, []);
@@ -264,12 +266,12 @@ class Collection
 
 
     /**
-     * Update document(s)
+     * Update one document
      *
      * @param  array $data
      * @return int
      */
-    public function update(array $data)
+    public function updateOne(array $data)
     {
         if (!$data) {
             return 0;
@@ -277,26 +279,21 @@ class Collection
 
         list($filters, $options) = $this->getFiltersAndOptions();
 
-        $isSingle = $this->isSingle($data);
-        $data     = ['$set' => $data];
-
-        if ($isSingle) {
-            $updated = $this->collection->updateOne($filters, $data);
-        } else {
-            $updated = $this->collection->updateMany($filters, $data);
-        }
+        $updated = $this->collection->updateOne($filters, [
+            '$set' => $data
+        ]);
 
         return $updated->getModifiedCount();
     }
 
 
     /**
-     * Replace document(s)
+     * Update many documents
      *
      * @param  array $data
      * @return int
      */
-    public function replace(array $data)
+    public function updateMany(array $data)
     {
         if (!$data) {
             return 0;
@@ -304,26 +301,97 @@ class Collection
 
         list($filters, $options) = $this->getFiltersAndOptions();
 
-        $isSingle = $this->isSingle($data);
-
-        if ($isSingle) {
-            $updated = $this->collection->replaceOne($filters, $data);
-        } else {
-            $updated = $this->collection->replaceMany($filters, $data);
-        }
+        $updated = $this->collection->updateMany($filters, [
+            '$set' => $data
+        ]);
 
         return $updated->getModifiedCount();
+    }
+
+
+    /**
+     * Replace one document
+     *
+     * @param  array $data
+     * @return int
+     */
+    public function replaceOne(array $data)
+    {
+        if (!$data) {
+            return 0;
+        }
+
+        list($filters, $options) = $this->getFiltersAndOptions();
+
+        $replaced = $this->collection->replaceOne($filters, $data);
+
+        return $replaced->getModifiedCount();
+    }
+
+
+    /**
+     * Replace many documents
+     *
+     * @param  array $data
+     * @return int
+     */
+    public function replaceMany(array $data)
+    {
+        if (!$data) {
+            return 0;
+        }
+
+        list($filters, $options) = $this->getFiltersAndOptions();
+
+        $replaced = $this->collection->replaceMany($filters, $data);
+
+        return $replaced->getModifiedCount();
+    }
+
+
+    /**
+     * Delete a document
+     *
+     * @return bool
+     */
+    public function deleteOne()
+    {
+        list($filters, $options) = $this->getFiltersAndOptions();
+
+        $deleted = $this->collection->deleteOne($filters);
+
+        return $deleted->getDeletedCount();
+    }
+
+
+    /**
+     * Delete many documents
+     *
+     * @return bool
+     */
+    public function deleteMany()
+    {
+        list($filters, $options) = $this->getFiltersAndOptions();
+
+        $deleted = $this->collection->deleteMany($filters);
+
+        return $deleted->getDeletedCount();
     }
 
 
     /**
      * Get total count of matched documents
      *
+     * @param  bool $reset
      * @return int
      */
-    public function count()
+    public function count($reset = true)
     {
         list($filters, $options) = $this->getFiltersAndOptions(false);
+
+        if ($reset) {
+            $this->resetQuery();
+        }
 
         return $this->collection->count($filters, $options);
     }

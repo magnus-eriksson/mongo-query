@@ -25,7 +25,7 @@ class Database
      */
     public function __construct(MongoDatabase $db, $dbName, array $options)
     {
-        $this->db      = $db->withOptions([
+        $this->db = $db->withOptions([
             'typeMap' => [
                 'root'     => 'array',
                 'document' => 'array',

@@ -183,6 +183,14 @@ class Filters
             $val = ['$lt' => $val];
         }
 
+        if ($type == '>=') {
+            $val = ['$gte' => $val];
+        }
+
+        if ($type == '<=') {
+            $val = ['$lte' => $val];
+        }
+
         if ($type == '!>') {
             $val = ['$not' => ['$gt' => $val]];
         }

@@ -30,8 +30,12 @@ class MongoQuery
      * @param Client $client
      * @param array  $options
      */
-    public function __construct(Client $client, array $options = [])
+    public function __construct(Client $client = null, array $options = [])
     {
+        if (is_null($client)) {
+            $client = new Client('mongodb://localhost:27017');
+        }
+
         $this->client  = $client;
         $this->options = array_merge(
             $this->options,
