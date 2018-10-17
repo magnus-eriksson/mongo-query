@@ -233,6 +233,27 @@ class Collection
 
 
     /**
+     * Pluck a specific field from the matched documents
+     *
+     * @param  string $field
+     * @return array
+     */
+    public function pluck($field)
+    {
+        // Remove any other select-values
+        $this->select(['*']);
+        $this->select([$field]);
+        $result = $this->get();
+
+        if (!empty($result[0]) && array_key_exists($field, $result[0])) {
+            $result = array_unique(array_column($result, $field));
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Insert document(s)
      *
      * @param  array  $data

@@ -270,6 +270,24 @@ $result = $collection->select(['some-key', 'some-other-key'])->get();
 **Note:** This method will always return the `_id`-field as well
 
 
+#### Pluck
+
+If you only want to get one single field as an array with all the values, you can use `pluck()`
+
+```php
+$result = $collection->pluck('some-key');
+
+// Returns
+// [
+//     'first-value',
+//     'second-value',
+//     ...
+// ]
+```
+
+Any potential duplicates will also be removed.
+
+
 ### Update
 
 To update an item, use `updateOne(array $data)`:
