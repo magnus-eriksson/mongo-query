@@ -19,6 +19,11 @@ class Filters
     /**
      * @var array
      */
+    protected $and = [];
+
+    /**
+     * @var array
+     */
     protected $inList = [];
 
 
@@ -71,6 +76,37 @@ class Filters
 
         list($key, $value) = $this->parseWhere($key, $type, $value);
         $this->or[] = [$key => $value];
+
+        return $this;
+    }
+
+
+    /**
+     * Add an and where clause
+     *
+     * @param  Closure|string $key
+     * @param  mixed          $type
+     * @param  mixed          $value
+     * @return $this
+     */
+    public function andWhere($key, $type = null, $value = null)
+    {
+        if ($key instanceof Closure) {
+            $filters = new Filters;
+            $key($filters);
+
+            $this->and[] = $filters->getFilters();
+
+            return $this;
+        }
+
+        if (func_num_args() == 2) {
+            $value = $type;
+            $type  = '=';
+        }
+
+        list($key, $value) = $this->parseWhere($key, $type, $value);
+        $this->and[] = [$key => $value];
 
         return $this;
     }
@@ -138,6 +174,10 @@ class Filters
 
         if ($this->or) {
             $filters['$or'] = $this->or;
+        }
+
+        if ($this->and) {
+            $filters['$and'] = $this->and;
         }
 
         return $filters;

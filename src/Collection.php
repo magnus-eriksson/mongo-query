@@ -86,6 +86,22 @@ class Collection
 
 
     /**
+     * Add an and where clause
+     *
+     * @param  Closure|string $key
+     * @param  mixed          $type
+     * @param  mixed          $value
+     * @return $this
+     */
+    public function andWhere($key, $type = null, $value = null)
+    {
+        $this->query['filters']->andWhere($key, $type, $value);
+
+        return $this;
+    }
+
+
+    /**
      * Exists in list
      *
      * @param  string $key
@@ -441,6 +457,17 @@ class Collection
         $this->query['options'] = new Options;
 
         return $this;
+    }
+
+
+    /**
+     * Get the query and options as array
+     *
+     * @return array
+     */
+    public function getQuery()
+    {
+        return $this->getFiltersAndOptions(false);
     }
 
 
