@@ -1,4 +1,6 @@
-<?php namespace Maer\MongoQuery;
+<?php
+
+namespace Maer\MongoQuery;
 
 use Closure;
 use Exception;
@@ -10,24 +12,25 @@ use Traversable;
 class Collection
 {
     /**
-     * @var \MongoDB\Collection
+     * @var MongoCollection
      */
-    protected $collection;
+    protected MongoCollection $collection;
 
     /**
      * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      * The current query
      * @var array
      */
-    protected $query;
+    protected array $query;
 
 
     /**
-     * @param Collection $collection
+     * @param MongoCollection $collection
+     * @param array $options
      */
     public function __construct(MongoCollection $collection, array $options)
     {
@@ -40,9 +43,9 @@ class Collection
     /**
      * Get the collection instance
      *
-     * @return \MongoDB\Collection
+     * @return MongoCollection
      */
-    public function getInstance()
+    public function getCollection(): MongoCollection
     {
         return $this->collection;
     }
@@ -53,10 +56,10 @@ class Collection
      *
      * @param  string $key
      * @param  string $type
-     * @param  string $value
-     * @return $this
+     * @param  mixed $value
+     * @return self
      */
-    public function where($key, $type, $value = null)
+    public function where(string $key, string $type, mixed $value = null): self
     {
         if (func_num_args() == 2) {
             $value = $type;
@@ -75,9 +78,9 @@ class Collection
      * @param  Closure|string $key
      * @param  mixed          $type
      * @param  mixed          $value
-     * @return $this
+     * @return self
      */
-    public function orWhere($key, $type = null, $value = null)
+    public function orWhere(Closure|string $key, mixed $type = null, mixed $value = null): self
     {
         $this->query['filters']->orWhere($key, $type, $value);
 
@@ -91,9 +94,9 @@ class Collection
      * @param  Closure|string $key
      * @param  mixed          $type
      * @param  mixed          $value
-     * @return $this
+     * @return self
      */
-    public function andWhere($key, $type = null, $value = null)
+    public function andWhere(Closure|string $key, mixed $type = null, mixed $value = null): self
     {
         $this->query['filters']->andWhere($key, $type, $value);
 
@@ -105,10 +108,10 @@ class Collection
      * Exists in list
      *
      * @param  string $key
-     * @param  string $value
-     * @return $this
+     * @param  mixed $value
+     * @return self
      */
-    public function inList($key, $value)
+    public function inList(string $key, mixed $value): self
     {
         $this->query['filters']->inList($key, $value);
 
@@ -119,11 +122,11 @@ class Collection
     /**
      * Does not exist in list
      *
-     * @param  array $key
-     * @param  array $value
-     * @return $this
+     * @param  string $key
+     * @param  mixed $value
+     * @return self
      */
-    public function notInList($key, $value)
+    public function notInList(string $key, mixed $value): self
     {
         $this->query['filters']->notInList($key, $value);
 
@@ -135,9 +138,9 @@ class Collection
      * Select fields for the result
      *
      * @param  array  $fields
-     * @return $this
+     * @return self
      */
-    public function select(array $fields)
+    public function select(array $fields): self
     {
         $this->query['options']->select($fields);
 
@@ -149,9 +152,9 @@ class Collection
      * Limit the result
      *
      * @param  int $limit
-     * @return $this
+     * @return self
      */
-    public function limit($limit)
+    public function limit(int $limit): self
     {
         $this->query['options']->limit($limit);
 
@@ -163,9 +166,9 @@ class Collection
      * Skip number of documents
      *
      * @param  int $skip
-     * @return $this
+     * @return self
      */
-    public function skip($skip)
+    public function skip(int $skip): self
     {
         $this->query['options']->skip($skip);
 
@@ -177,9 +180,9 @@ class Collection
      * Set order by
      *
      * @param  array  $order
-     * @return $this
+     * @return self
      */
-    public function orderBy($order)
+    public function orderBy(array $order): self
     {
         $this->query['options']->orderBy($order);
 
@@ -192,7 +195,7 @@ class Collection
      *
      * @return array
      */
-    public function get()
+    public function get(): array
     {
         list($filters, $options) = $this->getFiltersAndOptions();
 
@@ -205,9 +208,12 @@ class Collection
     /**
      * Find a document based on one column
      *
+     * @param mixed $value
+     * @param string $column
+     *
      * @return array
      */
-    public function find($value, $column = '_id')
+    public function find(mixed $value, string|array $column = '_id'): array
     {
         $this->resetQuery();
 
@@ -239,7 +245,7 @@ class Collection
      *
      * @return array
      */
-    public function first()
+    public function first(): array
     {
         $this->query['options']->limit(1);
         $result = $this->get();
@@ -254,7 +260,7 @@ class Collection
      * @param  string $field
      * @return array
      */
-    public function pluck($field)
+    public function pluck(string $field): array
     {
         // Remove any other select-values
         $this->select(['*']);
@@ -275,7 +281,7 @@ class Collection
      * @param  array  $data
      * @return mixed
      */
-    public function insert(array $data)
+    public function insert(array $data): mixed
     {
         $this->resetQuery();
 
@@ -320,13 +326,13 @@ class Collection
      * @param  array $data
      * @return int
      */
-    public function updateOne(array $data)
+    public function updateOne(array $data): int
     {
         if (!$data) {
             return 0;
         }
 
-        list($filters, $options) = $this->getFiltersAndOptions();
+        [$filters] = $this->getFiltersAndOptions();
 
         $updated = $this->collection->updateOne($filters, [
             '$set' => $data
@@ -342,13 +348,13 @@ class Collection
      * @param  array $data
      * @return int
      */
-    public function updateMany(array $data)
+    public function updateMany(array $data): int
     {
         if (!$data) {
             return 0;
         }
 
-        list($filters, $options) = $this->getFiltersAndOptions();
+        [$filters] = $this->getFiltersAndOptions();
 
         $updated = $this->collection->updateMany($filters, [
             '$set' => $data
@@ -364,35 +370,15 @@ class Collection
      * @param  array $data
      * @return int
      */
-    public function replaceOne(array $data)
+    public function replaceOne(array $data): int
     {
         if (!$data) {
             return 0;
         }
 
-        list($filters, $options) = $this->getFiltersAndOptions();
+        [$filters] = $this->getFiltersAndOptions();
 
         $replaced = $this->collection->replaceOne($filters, $data);
-
-        return $replaced->getModifiedCount();
-    }
-
-
-    /**
-     * Replace many documents
-     *
-     * @param  array $data
-     * @return int
-     */
-    public function replaceMany(array $data)
-    {
-        if (!$data) {
-            return 0;
-        }
-
-        list($filters, $options) = $this->getFiltersAndOptions();
-
-        $replaced = $this->collection->replaceMany($filters, $data);
 
         return $replaced->getModifiedCount();
     }
@@ -403,9 +389,9 @@ class Collection
      *
      * @return bool
      */
-    public function deleteOne()
+    public function deleteOne(): bool
     {
-        list($filters, $options) = $this->getFiltersAndOptions();
+        [$filters] = $this->getFiltersAndOptions();
 
         $deleted = $this->collection->deleteOne($filters);
 
@@ -418,9 +404,9 @@ class Collection
      *
      * @return bool
      */
-    public function deleteMany()
+    public function deleteMany(): bool
     {
-        list($filters, $options) = $this->getFiltersAndOptions();
+        [$filters] = $this->getFiltersAndOptions();
 
         $deleted = $this->collection->deleteMany($filters);
 
@@ -434,7 +420,7 @@ class Collection
      * @param  bool $reset
      * @return int
      */
-    public function count($reset = true)
+    public function count(bool $reset = true): int
     {
         list($filters, $options) = $this->getFiltersAndOptions(false);
 
@@ -442,16 +428,16 @@ class Collection
             $this->resetQuery();
         }
 
-        return $this->collection->count($filters, $options);
+        return $this->collection->countDocuments($filters, $options);
     }
 
 
     /**
      * Reset the query and clear all filters and options
      *
-     * @return $this
+     * @return self
      */
-    public function resetQuery()
+    public function resetQuery(): self
     {
         $this->query['filters'] = new Filters;
         $this->query['options'] = new Options;
@@ -465,7 +451,7 @@ class Collection
      *
      * @return array
      */
-    public function getQuery()
+    public function getQuery(): array
     {
         return $this->getFiltersAndOptions(false);
     }
@@ -478,7 +464,7 @@ class Collection
      * @param  array $fallback
      * @return array
      */
-    protected function processResult($result, $fallback = [])
+    protected function processResult($result, $fallback = []): array
     {
         if ($result instanceof Traversable) {
             $result = iterator_to_array($result);
@@ -511,9 +497,9 @@ class Collection
      * Check if the data contains a single document or many
      *
      * @param  array $data
-     * @return boolean
+     * @return bool
      */
-    protected function isSingle(array &$data)
+    protected function isSingle(array &$data): bool
     {
         reset($data);
         return !is_int(key($data));
@@ -526,7 +512,7 @@ class Collection
      * @param  boolean $reset
      * @return array
      */
-    protected function getFiltersAndOptions($reset = true)
+    protected function getFiltersAndOptions($reset = true): array
     {
         $data = [
             $this->query['filters']->getFilters(),

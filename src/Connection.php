@@ -1,24 +1,26 @@
-<?php namespace Maer\MongoQuery;
+<?php
+
+namespace Maer\MongoQuery;
 
 use MongoDB\Client;
 
-class MongoQuery
+class Connection
 {
     /**
-     * @var \MongoDB\Client
+     * @var Client
      */
-    protected $client;
+    protected Client $client;
 
     /**
      * List of databases
      * @var array
      */
-    protected $databases = [];
+    protected array $databases = [];
 
     /**
      * @var array
      */
-    protected $options = [
+    protected array $options = [
         'dbName'       => null,
         'stringifyIds' => true,
         'indexes'      => [],
@@ -47,21 +49,21 @@ class MongoQuery
     /**
      * Get the mongo instance
      *
-     * @return \MongoDB\Client
+     * @return Client
      */
-    public function getInstance()
+    public function getClient(): Client
     {
         return $this->client;
     }
 
 
     /**
-     * Get a database
+     * Get database
      *
      * @param  string $dbName
      * @return Database
      */
-    public function database($dbName = null)
+    public function database(string $dbName = null): Database
     {
         $dbName = $dbName ?: $this->options['dbName'];
 
@@ -87,7 +89,7 @@ class MongoQuery
      * @param  string $dbName
      * @return Database
      */
-    public function __get($dbName)
+    public function __get(string $dbName): Database
     {
         return $this->database($dbName);
     }

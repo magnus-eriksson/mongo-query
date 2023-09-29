@@ -1,29 +1,33 @@
-<?php namespace Maer\MongoQuery;
+<?php
+
+namespace Maer\MongoQuery;
 
 use MongoDB\Database as MongoDatabase;
 
 class Database
 {
     /**
-     * @var \MongoDB\Client
+     * @var MongoDatabase
      */
-    protected $db;
+    protected MongoDatabase $db;
 
     /**
      * @var string
      */
-    protected $dbName;
+    protected string $dbName;
 
     /**
      * @var array
      */
-    protected $options;
+    protected array $options;
 
 
     /**
-     * @param Client $db
+     * @param MongoDatabase $db
+     * @param string $dbName
+     * @param array $options
      */
-    public function __construct(MongoDatabase $db, $dbName, array $options)
+    public function __construct(MongoDatabase $db, string $dbName, array $options)
     {
         $this->db = $db->withOptions([
             'typeMap' => [
@@ -35,17 +39,15 @@ class Database
 
         $this->options = $options;
         $this->dbName  = $dbName;
-
-        $this->index();
     }
 
 
     /**
      * Get the database instance
      *
-     * @return \MongoDB\Database
+     * @return MongoDatabase
      */
-    public function getInstance()
+    public function getDatabase(): MongoDatabase
     {
         return $this->db;
     }
@@ -55,9 +57,9 @@ class Database
      * Get a collection
      *
      * @param  string $collection
-     * @return Query
+     * @return Collection
      */
-    public function collection($collectionName)
+    public function collection(string $collectionName): Collection
     {
         return new Collection(
             $this->db->{$collectionName},
@@ -70,18 +72,10 @@ class Database
      * Get a collection
      *
      * @param  string $collection
-     * @return Query
+     * @return Collection
      */
-    public function __get($collectionName)
+    public function __get(string $collectionName): Collection
     {
         return $this->collection($collectionName);
-    }
-
-
-    /**
-     * Create indexes
-     */
-    protected function index()
-    {
     }
 }

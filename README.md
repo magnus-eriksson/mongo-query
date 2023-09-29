@@ -45,10 +45,10 @@ include '/path/to/vendor/autoload.php';
 
 // Instatiate with no arguments and a MongoDB\Client instance will be created
 // (using localhost and default port)
-$client = new Maer\MongoQuery\MongoQuery();
+$client = new Maer\MongoQuery\Connection();
 
 // To use a custom client instance, pass it as the first argument
-$client = $client = new Maer\MongoQuery\MongoQuery(
+$client = $client = new Maer\MongoQuery\Connection(
     new MongoDB\Client('mongodb://example.com:1234')
 );
 
@@ -236,14 +236,14 @@ $collection->orWhere(function ($query) {
 
 #### Order by
 
-To sort the result in a specific way, you can use `orderBy($column, $order = 'asc')`.
+To sort the result in a specific way, you can use `orderBy(['column' => 'asc|desc'])`.
 
 ```php
 // Ascending order:
-$result = $collection->orderBy('first_name');
+$result = $collection->orderBy(['first_name' => 'asc']);
 
 // Descending order:
-$result = $collection->orderBy('first_name', 'desc');
+$result = $collection->orderBy(['first_name' => 'desc']);
 ```
 
 #### Limit
@@ -344,10 +344,6 @@ $result = $collection->first();
 // ]
 ```
 
-To replace multiple documents, use `replaceMany($data)`
-
-These method returns the number of modified documents.
-
 ### Delete
 
 Delete items
@@ -369,16 +365,16 @@ These methods returns the number of modified documents.
 Sometimes you want to do some magic that this library doesn't support (yet). To do that, you might need to access the underlying MongoDB instances. You can do that with the `getInstance()`-methods.
 
 ```php
-$mongo = new Maer\MongoQuery\MongoQuery;
+$mongo = new Maer\MongoQuery\Connection;
 
 // Get MongoDB\Client
-$client = $mongo->getInstance();
+$client = $mongo->getClient();
 
 // Get MongoDB\Database
-$database = $mongo->someDatabase->getInstance();
+$database = $mongo->someDatabase->getDatabase();
 
 // Get MongoDB\Collection
-$collection = $mongo->someDatabase->someCollection->getInstance();
+$collection = $mongo->someDatabase->someCollection->getCollection();
 
 ```
 
