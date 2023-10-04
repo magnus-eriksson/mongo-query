@@ -1,4 +1,6 @@
-<?php namespace Maer\MongoQuery;
+<?php
+
+namespace Maer\MongoQuery;
 
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Regex;
@@ -116,19 +118,22 @@ class Filters
      * Exists in list
      *
      * @param  string       $key
-     * @param  array|string $value
-     * @return $this
+     * @param  array $value
+     * @return self
      */
-    public function inList($key, $value)
+    public function inList(string $key, array $values): self
     {
         $query = [];
-        $key  .= '.$elemMatch';
 
-        if (!is_array($value)) {
-            $value = [$value];
+        if ($key === 'id') {
+            $key = '_id';
         }
 
-        $this->setArray($key, ['$in' => $value], $query);
+        if ($key === '_id') {
+            $values = array_map(fn ($v) => $v instanceof ObjectId ? $v : new ObjectId($v), $values);
+        }
+
+        $this->setArray($key, ['$in' => $values], $query);
 
         $this->inList = array_replace($this->inList, $query);
 
@@ -139,15 +144,24 @@ class Filters
     /**
      * Does not exist in list
      *
-     * @param  array $key
+     * @param  string $key
      * @param  array $value
-     * @return $this
+     * @return self
      */
-    public function notInList($key, $value)
+    public function notInList(string $key, array $values): self
     {
         $query = [];
+
+        if ($key === 'id') {
+            $key = '_id';
+        }
+
+        if ($key === '_id') {
+            $values = array_map(fn ($v) => $v instanceof ObjectId ? $v : new ObjectId($v), $values);
+        }
+
         $key  .= '.$nin';
-        $this->setArray($key, [$value], $query);
+        $this->setArray($key, [$values], $query);
 
         $this->inList = array_replace($this->inList, $query);
 
@@ -276,7 +290,7 @@ class Filters
                 $arr[$k] = [];
             }
 
-            $arr =& $arr[$k];
+            $arr = &$arr[$k];
         }
 
         $arr[array_shift($keys)] = $value;
